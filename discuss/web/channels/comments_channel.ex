@@ -7,16 +7,17 @@ defmodule Discuss.CommentsChannel do
     topic_id = String.to_integer(topic_id) 
     topic = Topic
       |> Repo.get(topic_id) # look into Repo and pull out the topic with its equivalent id
-      |> Repo.preload(:comments) # load records(comments) that are associated with topic
+      |> Repo.preload(comments: [:user]) # load records(comments) that are associated with topic
 
     {:ok, %{comments: topic.comments}, assign(socket, :topic, topic)}
   end
 
   def handle_in(name, %{"content" => content}, socket) do
     topic = socket.assigns.topic
+    user_id = socket.assigns.user_id
 
     changeset = topic
-    |> build_assoc(:comments)
+    |> build_assoc(:comments, user_id: user_id)
     |> Comment.changeset(%{content: content})
 
     case Repo.insert(changeset) do

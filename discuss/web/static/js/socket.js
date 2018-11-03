@@ -85,7 +85,7 @@ function renderComments(comments) {
   document.querySelector(".collection").innerHTML = renderedComments.join("");
 }
 
-// Turns one comment into one li and then adds to existing list
+// Turns one comment into one <li> and then adds to existing list
 function renderComment(event) {
   const renderedComment = commentTemplate(event.comment);
 
@@ -93,9 +93,17 @@ function renderComment(event) {
 }
 
 function commentTemplate(comment) {
+  let email = "Anonymous";
+  if (comment.user) {
+    email = comment.user.email
+  }
+
   return `
     <li class="collection-item">
       ${comment.content}
+      <div class="secondary-content">
+        ${email}
+      </div>
     </li>
     `;
 }
